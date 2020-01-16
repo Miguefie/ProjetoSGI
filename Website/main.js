@@ -2,10 +2,13 @@
 
 function main() 
 {
+    var colorButton = document.getElementById("colorButton");
     const canvas = document.querySelector('#container');
     const renderer = new THREE.WebGLRenderer({canvas});
     const camera = new THREE.PerspectiveCamera( 75, 2, 0.1, 5);
     camera.position.z = 2;
+
+    
 
 
     const scene = new THREE.Scene();
@@ -62,21 +65,21 @@ function main()
         if (resizeRendererToDisplaySize(renderer)) {
           const canvas = renderer.domElement;
           camera.aspect = canvas.clientWidth / canvas.clientHeight;
-          camera.updateProjectionMatrix();
+          camera.updateProjectionMatrix(colorButton.style.background);
         }
-    
+
         cubes.forEach((cube, ndx) => {
           const speed = 1 + ndx * .1;
           const rot = time * speed;
           cube.rotation.x = rot;
           cube.rotation.y = rot;
+          cube.material.color.setStyle(colorButton.style.background); // CHANGE COLOR
         });
-    
+        
         renderer.render(scene, camera);
     
         requestAnimationFrame(render);
    }
-    
     requestAnimationFrame(render);
     
 }

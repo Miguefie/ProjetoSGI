@@ -5,29 +5,42 @@ function main()
     var colorButton = document.getElementById("colorButton");
     const canvas = document.querySelector('#container');
     const renderer = new THREE.WebGLRenderer({canvas});
-    const camera = new THREE.PerspectiveCamera( 75, 2, 0.1, 5);
+    const camera = new THREE.PerspectiveCamera( 45, 2, 1, 1000);
     camera.position.z = 2;
 
-    
+    var controlos = new THREE.OrbitControls( camera, renderer.domElement );
+    controlos.enablePan = false;
+    controlos.maxDistance = 5;
+
 
 
     const scene = new THREE.Scene();
-
     {
         const color = 0xFFFFFF;
         const intensity = 1;
         const light = new THREE.DirectionalLight(color, intensity);
         light.position.set(-1, 2, 4);
         scene.add(light);
+        scene.background = new THREE.Color("#A9A9A9");
     }
 
-    const boxWidth = 1;
-    const boxHeight = 1;
-    const boxDepth = 1;
-    const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+    //const boxWidth = 1;
+    //const boxHeight = 1;
+    //const boxDepth = 1;
+    //const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
+    var carregador = new THREE.GLTFLoader();
 
-    //Adicionar Objetos à Cena
+    carregador.load('MochilaFinal.gltf',
+    function ( gltf ) {
+      scene.add( gltf.scene )
+      //clipe = THREE.AnimationClip.findByName( gltf.animations, 'KeyAction' )
+      //acao = misturador.clipAction( clipe )
+      gltf.scene.position.x = 0;
+
+    })
+
+    /*//Adicionar Objetos à Cena
     function makeInstance(geometry, color, x) 
     {
         const material = new THREE.MeshPhongMaterial({color});
@@ -44,7 +57,7 @@ function main()
         makeInstance(geometry, 0x44aa88,  0),
         makeInstance(geometry, 0x8844aa, -2),
         makeInstance(geometry, 0xaa8844,  2),
-    ];
+    ];*/
 
     function resizeRendererToDisplaySize(renderer) 
     {
@@ -68,19 +81,13 @@ function main()
           camera.updateProjectionMatrix(colorButton.style.background);
         }
 
-        cubes.forEach((cube, ndx) => {
-          const speed = 1 + ndx * .1;
-          const rot = time * speed;
-          cube.rotation.x = rot;
-          cube.rotation.y = rot;
-          cube.material.color.setStyle(colorButton.style.background); // CHANGE COLOR
-        });
-        
         renderer.render(scene, camera);
     
         requestAnimationFrame(render);
    }
-    requestAnimationFrame(render);
+   controlos.addEventListener( 'change', render );
+   
+   requestAnimationFrame(render);
     
 }
 
